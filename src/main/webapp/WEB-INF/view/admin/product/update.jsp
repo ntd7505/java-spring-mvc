@@ -1,185 +1,131 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Update Product ${id}</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật sản phẩm #${id}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+</head>
+<body class="sb-nav-fixed">
+<jsp:include page="../layout/header.jsp"/>
+<div id="layoutSidenav">
+    <jsp:include page="../layout/sidebar.jsp"/>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4 text-warning">Cập nhật sản phẩm</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/product">Products</a></li>
+                    <li class="breadcrumb-item active">Update</li>
+                </ol>
 
-        <!-- Latest compiled and minified CSS -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet">
-        <!-- Latest compiled JavaScript -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link href="/css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
-            crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <jsp:include page="../layout/header.jsp" />
-        <div id="layoutSidenav">
-            <jsp:include page="../layout/sidebar.jsp" />
+                <div class="card shadow border-0 rounded-lg mb-4">
+                    <div class="card-header bg-white border-bottom-warning"><h5 class="my-2 text-warning"><i
+                            class="fas fa-edit me-2"></i>Sửa thông tin: #${id}</h5></div>
+                    <div class="card-body">
+                        <form:form method="post" action="/admin/product/update" modelAttribute="newProduct"
+                                   enctype="multipart/form-data" class="row g-3">
+                            <form:hidden path="id"/>
 
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4">Products Management</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active"><a
-                                    href="/admin">Dashboard</a> <span> /
-                                    Products</span></li>
-                            <div class="container mt-5">
-                                <div class="row">
-                                    <div class="col-md-6 col-12 mx-auto">
-                                        <h3>Update Product ${id}</h3>
-                                        <hr>
-                                        <form:form method="post"
-                                            action="/admin/product/update"
-                                            modelAttribute="newProduct"
-                                            enctype="multipart/form-data">
-                                            <div class="mb-3"
-                                                style="display: none;">
-                                                <label
-                                                    class="form-label">ID</label>
-                                                <form:input type="text"
-                                                    class="form-control"
-                                                    path="id" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label
-                                                    class="form-label">Name</label>
-                                                <form:input type="text"
-                                                    class="form-control"
-                                                    path="name" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label
-                                                    class="form-label">Price</label>
-                                                <form:input type="text"
-                                                    class="form-control"
-                                                    path="price" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Detail
-                                                    Desc</label>
-                                                <form:input type="text"
-                                                    class="form-control"
-                                                    path="detailDesc" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">
-                                                    Short desc</label>
-                                                <form:input type="text"
-                                                    class="form-control"
-                                                    path="shortDesc" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label
-                                                    class="form-label">Quantity</label>
-                                                <form:input type="text"
-                                                    class="form-control"
-                                                    path="quantity" />
-                                            </div>
-                                            <div class="mb-3 col-12 col-md-6">
-                                                <label for="avatarFile"
-                                                    class="form-label">Image</label>
-                                                <input
-                                                    class="form-control"
-                                                    type="file" id="avatarFile"
-                                                    accept=".png , .jpg, .jpeg"
-                                                    name="hoidanitFile" />
-                                                <!-- Display current image -->
-                                                <c:if test="${newProduct.image != null}">
-                                                    <div class="mt-3">
-                                                        <p class="text-muted">Current Image:</p>
-                                                        <img id="avatarPreview" 
-                                                            src="/images/product/${newProduct.image}" 
-                                                            alt="Product Image"
-                                                            style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; padding: 5px; display: block;">
-                                                    </div>
-                                                </c:if>
-                                                <c:if test="${newProduct.image == null}">
-                                                    <img id="avatarPreview" 
-                                                        alt="Product Image Preview"
-                                                        style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; padding: 5px; display: none;">
-                                                </c:if>
-                                            </div>
-                                            <div class="mb-3 col-12 col-md-6">
-                                                <label
-                                                    class="form-label">Factory</label>
-                                                <form:select class="form-select"
-                                                    path="factory">
-                                                    <form:option
-                                                        value="Apple">Apple(MacBook)</form:option>
-                                                    <form:option
-                                                        value="Asus">Asus</form:option>
-                                                    <form:option
-                                                        value="Lenovo">Lenovo</form:option>
-                                                    <form:option
-                                                        value="Dell">Dell</form:option>
-                                                    <form:option
-                                                        value="LG">LG</form:option>
-                                                    <form:option
-                                                        value="Acer">Acer</form:option>
-                                                </form:select>
-                                            </div>
-                                            <div class="mb-3 col-12 col-md-6">
-                                                <label
-                                                    class="form-label">Target</label>
-                                                <form:select class="form-select"
-                                                    path="target">
-                                                    <form:option
-                                                        value="Gaming">Gaming</form:option>
-                                                    <form:option
-                                                        value="Sinh viên - Văn phòng">Sinh
-                                                        viên - Văn
-                                                        phòng</form:option>
-                                                    <form:option
-                                                        value="Thiết kế đồ họa">Thiết
-                                                        kế đồ họa</form:option>
-                                                    <form:option
-                                                        value="Mỏng nhẹ">Mỏng
-                                                        nhẹ</form:option>
-                                                    <form:option
-                                                        value="Doanh nhân">Doanh
-                                                        nhân</form:option>
-
-                                                </form:select>
-                                            </div>
-                                            <a href="/admin/user"
-                                                class="btn btn-success">Back</a>
-                                            <button type="submit"
-                                                class="btn btn-warning">Update</button>
-                                        </form:form>
+                            <div class="col-lg-8">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Tên sản phẩm</label>
+                                        <form:input type="text" class="form-control" path="name"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Giá tiền</label>
+                                        <div class="input-group">
+                                            <form:input type="number" class="form-control" path="price"/>
+                                            <span class="input-group-text">VNĐ</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Số lượng</label>
+                                        <form:input type="number" class="form-control" path="quantity"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Hãng sản xuất</label>
+                                        <form:select class="form-select" path="factory">
+                                            <form:option value="Apple">Apple (MacBook)</form:option>
+                                            <form:option value="Asus">Asus</form:option>
+                                            <form:option value="Lenovo">Lenovo</form:option>
+                                            <form:option value="Dell">Dell</form:option>
+                                            <form:option value="LG">LG</form:option>
+                                            <form:option value="Acer">Acer</form:option>
+                                        </form:select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Nhu cầu</label>
+                                        <form:select class="form-select" path="target">
+                                            <form:option value="Gaming">Gaming</form:option>
+                                            <form:option
+                                                    value="Sinh viên - Văn phòng">Sinh viên - Văn phòng</form:option>
+                                            <form:option value="Thiết kế đồ họa">Thiết kế đồ họa</form:option>
+                                            <form:option value="Mỏng nhẹ">Mỏng nhẹ</form:option>
+                                            <form:option value="Doanh nhân">Doanh nhân</form:option>
+                                        </form:select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Mô tả ngắn</label>
+                                        <form:textarea class="form-control" path="shortDesc" rows="3"/>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Mô tả chi tiết</label>
+                                        <form:textarea class="form-control" path="detailDesc" rows="5"/>
                                     </div>
                                 </div>
                             </div>
-                        </ol>
+
+                            <div class="col-lg-4 text-center">
+                                <div class="p-3 border rounded bg-light">
+                                    <label class="form-label fw-bold d-block mb-3">Hình ảnh sản phẩm</label>
+                                    <c:if test="${not empty newProduct.image}">
+                                        <div class="mb-2">
+                                            <small class="text-muted d-block mb-1">Ảnh hiện tại:</small>
+                                            <img src="/images/product/${newProduct.image}" class="img-thumbnail"
+                                                 style="max-height: 150px;" alt="Current Image">
+                                        </div>
+                                    </c:if>
+
+                                    <div class="mt-3">
+                                        <small class="text-muted d-block mb-1">Chọn ảnh mới (nếu muốn thay đổi):</small>
+                                        <img id="avatarPreview" style="max-height: 150px; display: none;"
+                                             class="img-thumbnail mb-2 mx-auto"/>
+                                        <input type="file" class="form-control" id="avatarFile" name="hoidanitFile"
+                                               accept="image/*"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-end mt-4 pt-3 border-top">
+                                <a href="/admin/product" class="btn btn-secondary px-4 me-2">Hủy bỏ</a>
+                                <button type="submit" class="btn btn-warning px-4 fw-bold text-white">Lưu thay đổi
+                                </button>
+                            </div>
+                        </form:form>
                     </div>
-
-                </main>
-                <jsp:include page="../layout/footer.jsp" />
-
+                </div>
             </div>
-        </div>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/js/scripts.js"></script>
-        <script>
-            $(document).ready(() => {
-                const avatarFile = $("#avatarFile");
-                avatarFile.change(function (e) {
-                    const imgURL = URL.createObjectURL(e.target.files[0]);
-                    $("#avatarPreview").attr("src", imgURL);
-                    $("#avatarPreview").css({ "display": "block" });
-                });
-            });
-        </script>
-    </body>
+        </main>
+        <jsp:include page="../layout/footer.jsp"/>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/js/scripts.js"></script>
+<script>
+    $(document).ready(() => {
+        $("#avatarFile").change(function (e) {
+            const imgURL = URL.createObjectURL(e.target.files[0]);
+            $("#avatarPreview").attr("src", imgURL).show();
+        });
+    });
+</script>
+</body>
 </html>

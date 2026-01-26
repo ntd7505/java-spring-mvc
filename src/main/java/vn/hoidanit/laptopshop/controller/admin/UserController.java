@@ -134,7 +134,6 @@ public class UserController {
     // post xoa thong tin
     @PostMapping("/admin/user/delete")
     public String postDeleteUser(Model model, @ModelAttribute("dUser") User dUser) {
-        System.out.println(":hllo");
         this.userService.deleteUserById(dUser.getId());
         return "redirect:/admin/user";
     }

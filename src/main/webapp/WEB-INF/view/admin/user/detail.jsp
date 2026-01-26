@@ -1,80 +1,93 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>User detail ${id}</title>
-        <!-- Latest compiled and minified CSS -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet">
-        <!-- Latest compiled JavaScript -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link href="/css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
-            crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <jsp:include page="../layout/header.jsp" />
-        <div id="layoutSidenav">
-            <jsp:include page="../layout/sidebar.jsp" />
+<head>
+    <meta charset="UTF-8">
+    <title>Hồ sơ người dùng #${id}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <style>
+        .profile-card-header {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            height: 120px;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
 
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4">Users Management</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active"><a
-                                    href="/admin">Dashboard</a> <span> /
-                                    Users</span></li>
-                            <div class="container mt-5">
-                                <div class="row">
-                                    <div class="col-12 mx-auto">
-                                        <div
-                                            class="d-flex justify-content-between">
-                                            <h2>Users detail with id =
-                                                ${id}</h2>
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            margin-top: -60px;
+            object-fit: cover;
+            background: #fff;
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+<jsp:include page="../layout/header.jsp"/>
+<div id="layoutSidenav">
+    <jsp:include page="../layout/sidebar.jsp"/>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <ol class="breadcrumb mb-4 mt-4">
+                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/user">Users</a></li>
+                    <li class="breadcrumb-item active">Detail</li>
+                </ol>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow border-0 rounded-lg">
+                            <div class="profile-card-header"></div>
+                            <div class="card-body text-center">
+                                <img src="/images/avatar/${user.avatar}"
+                                     onerror="this.src='https://ui-avatars.com/api/?name=${user.fullName}&size=120'"
+                                     class="profile-avatar mb-3 shadow-sm" alt="User Avatar">
+
+                                <h3 class="fw-bold text-dark">${user.fullName}</h3>
+                                <p class="text-muted mb-4"><span
+                                        class="badge bg-primary rounded-pill">${user.role.name}</span></p>
+
+                                <div class="row text-start mt-4 px-lg-5">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="small text-muted text-uppercase fw-bold">Email</label>
+                                        <div class="fs-5"><i class="fas fa-envelope text-primary me-2"></i>${user.email}
                                         </div>
-                                        <div class="card" style="width: 60%;">
-                                            <div class="card-header">
-                                                User Information
-                                            </div>
-                                            <ul
-                                                class="list-group list-group-flush">
-                                                <li class="list-group-item">ID:
-                                                    ${id}</li>
-                                                <li
-                                                    class="list-group-item">Email:
-                                                    ${user.email}</li>
-                                                <li class="list-group-item">Full
-                                                    Name: ${user.fullName}</li>
-                                                <li
-                                                    class="list-group-item">Address:
-                                                    ${user.address}</li>
-                                            </ul>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="small text-muted text-uppercase fw-bold">User ID</label>
+                                        <div class="fs-5">#${user.id}</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="small text-muted text-uppercase fw-bold">Số điện thoại</label>
+                                        <div class="fs-5"><i class="fas fa-phone text-success me-2"></i>${user.phone}
                                         </div>
-                                        <a href="/admin/user"
-                                            class="btn btn-success mt-3">Back</a>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="small text-muted text-uppercase fw-bold">Địa chỉ</label>
+                                        <div class="fs-5"><i
+                                                class="fas fa-map-marker-alt text-danger me-2"></i>${user.address}</div>
                                     </div>
                                 </div>
+
+                                <div class="mt-4 border-top pt-3">
+                                    <a href="/admin/user" class="btn btn-outline-secondary px-4 me-2">Quay lại</a>
+                                    <a href="/admin/user/update/${user.id}" class="btn btn-primary px-4">Chỉnh sửa</a>
+                                </div>
                             </div>
-                        </ol>
+                        </div>
                     </div>
-
-                </main>
-                <jsp:include page="../layout/footer.jsp" />
-
+                </div>
             </div>
-        </div>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/js/scripts.js"></script>
-    </body>
+        </main>
+        <jsp:include page="../layout/footer.jsp"/>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/scripts.js"></script>
+</body>
 </html>

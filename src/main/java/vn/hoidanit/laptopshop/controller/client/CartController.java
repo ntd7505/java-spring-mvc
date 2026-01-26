@@ -2,6 +2,7 @@ package vn.hoidanit.laptopshop.controller.client;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -71,9 +72,20 @@ public class CartController {
             @RequestParam("receiverName") String receiverName,
             @RequestParam("receiverAddress") String receiverAddress,
             @RequestParam("receiverPhone") String receiverPhone) {
-        HttpSession session = request.getSession(false);
 
-        return "redirect:/";
+        User currentUser = new User();
+        
+        HttpSession session = request.getSession(false);
+        long id = (long) session.getAttribute("id");
+        currentUser.setId(id);
+
+        this.cartService.handlePlaceOrder(currentUser, session, receiverName, receiverAddress, receiverPhone);
+
+        return "redirect:/thanks";
     }
 
+    @GetMapping("/thanks")
+    public String getThanksPage(Model model) {
+        return "/client/cart/thanks";
+    }
 }

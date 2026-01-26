@@ -1,205 +1,181 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo sản phẩm mới</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <style>
+        .preview-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
 
-        <!-- Latest compiled and minified CSS -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet">
-        <!-- Latest compiled JavaScript -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link href="/css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
-            crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <jsp:include page="../layout/header.jsp" />
-        <div id="layoutSidenav">
-            <jsp:include page="../layout/sidebar.jsp" />
+        .preview-area:hover {
+            background: #e9ecef;
+            border-color: #0d6efd;
+        }
 
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4">Products Management</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active"><a
-                                    href="/admin">Dashboard</a> <span> /
-                                    Products</span></li>
-                        </ol>
-                        <div class="mt-5">
-                            <div class="row">
-                                <div class="col-md-6 col-12 mx-auto">
-                                    <h3>Create a product</h3>
-                                    <hr>
-                                    <form:form method="post"
-                                        action="/admin/product/create"
-                                        modelAttribute="newProducts"
-                                        class="row g-3"
-                                        enctype="multipart/form-data">
-                                        <div class="mb-3 col-12 col-md-6">
-                                            <c:set var="errorName">
-                                                <form:errors path="name" />
-                                            </c:set>
-                                            <label
-                                                class="form-label">Name</label>
-                                            <form:input type="text"
-                                                class="form-control ${not empty errorName ? 'is-invalid':''}"
-                                                path="name" />
-                                            <form:errors path="name"
-                                                cssClass="invalid-feedback" />
-                                        </div>
-                                        <div class="mb-3 col-12 col-md-6">
-                                            <c:set var="errorPrice">
-                                                <form:errors path="price" />
-                                            </c:set>
-                                            <label
-                                                class="form-label">Price</label>
-                                            <form:input type="text"
-                                                class="form-control ${not empty errorPrice ? 'is-invalid':''}"
-                                                path="price" />
-                                            <form:errors path="price"
-                                                cssClass="invalid-feedback" />
-                                        </div>
-                                        <div class="mb-3 col-12 col-md-12">
-                                            <c:set var="errorDetails">
-                                                <form:errors
-                                                    path="detailDesc" />
-                                            </c:set>
-                                            <label class="form-label">Detail
-                                                description</label>
-                                            <form:input type="text"
-                                                class="form-control ${not empty errorDetails ? 'is-invalid':''}"
-                                                style="height: 80px;"
-                                                path="detailDesc" />
-                                            <form:errors path="detailDesc"
-                                                cssClass="invalid-feedback" />
-                                        </div>
+        .upload-icon {
+            font-size: 3rem;
+            color: #adb5bd;
+        }
 
-                                        <div class="mb-3 col-12 col-md-6">
-                                            <c:set var="errorShortDetails">
-                                                <form:errors
-                                                    path="shortDesc" />
-                                            </c:set>
-                                            <label
-                                                class="form-label">Short
-                                                description</label>
-                                            <form:input type="text"
-                                                class="form-control ${not empty errorShortDetails ? 'is-invalid':''}"
-                                                path="shortDesc" />
-                                            <form:errors path="shortDesc"
-                                                cssClass="invalid-feedback" />
+        #avatarPreview {
+            max-width: 100%;
+            max-height: 250px;
+            display: none;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+<jsp:include page="../layout/header.jsp"/>
+<div id="layoutSidenav">
+    <jsp:include page="../layout/sidebar.jsp"/>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4 text-primary">Tạo sản phẩm</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/product">Products</a></li>
+                    <li class="breadcrumb-item active">Create</li>
+                </ol>
+
+                <div class="card shadow-lg border-0 rounded-lg mb-4">
+                    <div class="card-header bg-white"><h5 class="my-2 text-secondary"><i class="fas fa-edit me-2"></i>Thông
+                        tin sản phẩm</h5></div>
+                    <div class="card-body">
+                        <form:form method="post" action="/admin/product/create" modelAttribute="newProducts"
+                                   class="row g-3 needs-validation" enctype="multipart/form-data">
+
+                            <div class="col-lg-8">
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <div class="form-floating">
+                                            <form:input type="text" class="form-control" id="name" path="name"
+                                                        placeholder="Name"/>
+                                            <label for="name">Tên sản phẩm</label>
+                                            <form:errors path="name" cssClass="invalid-feedback d-block"/>
                                         </div>
-                                        <div class="mb-3 col-12 col-md-6">
-                                            <c:set var="errorQuantity">
-                                                <form:errors
-                                                    path="quantity" />
-                                            </c:set>
-                                            <label class="form-label">
-                                                quantity</label>
-                                            <form:input type="text"
-                                                class="form-control ${not empty errorQuantity ? 'is-invalid':''}"
-                                                path="quantity" />
-                                            <form:errors path="quantity"
-                                                cssClass="invalid-feedback" />
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <form:input type="number" class="form-control" id="price" path="price"
+                                                        placeholder="Price"/>
+                                            <label for="price">Giá tiền (VNĐ)</label>
+                                            <form:errors path="price" cssClass="invalid-feedback d-block"/>
                                         </div>
-                                        <div class="mb-3 col-12 col-md-6">
-                                            <label
-                                                class="form-label">Factory</label>
-                                            <form:select class="form-select"
-                                                path="factory">
-                                                <form:option
-                                                    value="Apple">Apple(MacBook)</form:option>
-                                                <form:option
-                                                    value="Asus">Asus</form:option>
-                                                <form:option
-                                                    value="Lenovo">Lenovo</form:option>
-                                                <form:option
-                                                    value="Dell">Dell</form:option>
-                                                <form:option
-                                                    value="LG">LG</form:option>
-                                                <form:option
-                                                    value="Acer">Acer</form:option>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <form:input type="number" class="form-control" id="quantity" path="quantity"
+                                                        placeholder="Quantity"/>
+                                            <label for="quantity">Số lượng kho</label>
+                                            <form:errors path="quantity" cssClass="invalid-feedback d-block"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <form:select class="form-select" id="factory" path="factory">
+                                                <form:option value="Apple">Apple (MacBook)</form:option>
+                                                <form:option value="Asus">Asus</form:option>
+                                                <form:option value="Lenovo">Lenovo</form:option>
+                                                <form:option value="Dell">Dell</form:option>
+                                                <form:option value="LG">LG</form:option>
+                                                <form:option value="Acer">Acer</form:option>
                                             </form:select>
+                                            <label for="factory">Hãng sản xuất</label>
                                         </div>
-                                        <div class="mb-3 col-12 col-md-6">
-                                            <label
-                                                class="form-label">Target</label>
-                                            <form:select class="form-select"
-                                                path="target">
-                                                <form:option
-                                                    value="Gaming">Gaming</form:option>
-                                                <form:option
-                                                    value="Sinh viên - Văn phòng">Sinh
-                                                    viên - Văn
-                                                    phòng</form:option>
-                                                <form:option
-                                                    value="Thiết kế đồ họa">Thiết
-                                                    kế đồ họa</form:option>
-                                                <form:option
-                                                    value="Mỏng nhẹ">Mỏng
-                                                    nhẹ</form:option>
-                                                <form:option
-                                                    value="Doanh nhân">Doanh
-                                                    nhân</form:option>
+                                    </div>
 
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <form:select class="form-select" id="target" path="target">
+                                                <form:option value="Gaming">Gaming</form:option>
+                                                <form:option
+                                                        value="Sinh viên - Văn phòng">Sinh viên - Văn phòng</form:option>
+                                                <form:option value="Thiết kế đồ họa">Thiết kế đồ họa</form:option>
+                                                <form:option value="Mỏng nhẹ">Mỏng nhẹ</form:option>
+                                                <form:option value="Doanh nhân">Doanh nhân</form:option>
                                             </form:select>
+                                            <label for="target">Nhu cầu sử dụng</label>
                                         </div>
-                                        <div class="mb-3 col-12 col-md-6">
-                                            <label for="avatarFile"
-                                                class="form-label">Image</label>
-                                            <input
-                                                class="form-control"
-                                                type="file" id="avatarFile"
-                                                accept=".png , .jpg, .jpeg"
-                                                name="hoidanitFile" />
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <img
-                                                style="max-height: 350px; display: none;"
-                                                alt="avatar preview"
-                                                id="avatarPreview" />
-                                        </div>
-                                        <div class="col-12 mb-5">
-                                            <a href="/admin/product"
-                                                class="btn btn-success">Back</a>
-                                            <button type="submit"
-                                                class="btn btn-primary">Create
-                                            </button>
+                                    </div>
 
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <form:textarea class="form-control" id="shortDesc" path="shortDesc"
+                                                           style="height: 100px"
+                                                           placeholder="Short Desc"></form:textarea>
+                                            <label for="shortDesc">Mô tả ngắn</label>
                                         </div>
-                                    </form:form>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <form:textarea class="form-control" id="detailDesc" path="detailDesc"
+                                                           style="height: 150px"
+                                                           placeholder="Detail Desc"></form:textarea>
+                                            <label for="detailDesc">Mô tả chi tiết</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <div class="col-lg-4">
+                                <label class="form-label fw-bold mb-2">Ảnh sản phẩm</label>
+                                <div class="preview-area mb-3" onclick="document.getElementById('avatarFile').click()">
+                                    <img id="avatarPreview" alt="Preview"/>
+                                    <i class="fas fa-cloud-upload-alt upload-icon" id="uploadIcon"></i>
+                                </div>
+                                <input class="form-control" type="file" id="avatarFile" name="hoidanitFile"
+                                       accept="image/*"/>
+                                <div class="form-text text-center mt-2">Hỗ trợ: .png, .jpg, .jpeg (Max 5MB)</div>
+                            </div>
+
+                            <div class="col-12 text-end mt-4 pt-3 border-top">
+                                <a href="/admin/product" class="btn btn-secondary px-4 me-2">Quay lại</a>
+                                <button type="submit" class="btn btn-primary px-5 fw-bold">Tạo mới</button>
+                            </div>
+                        </form:form>
                     </div>
-
-                </main>
-                <jsp:include page="../layout/footer.jsp" />
-
+                </div>
             </div>
-        </div>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
-        <script src="/js/scripts.js"></script>
-        <script>
-            $(document).ready(() => {
-                const avatarFile = $("#avatarFile");
-                avatarFile.change(function (e) {
-                    const imgURL = URL.createObjectURL(e.target.files[0]);
-                    $("#avatarPreview").attr("src", imgURL);
-                    $("#avatarPreview").css({ "display": "block" });
-                });
-            });
-        </script>
-    </body>
+        </main>
+        <jsp:include page="../layout/footer.jsp"/>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/js/scripts.js"></script>
+<script>
+    $(document).ready(() => {
+        $("#avatarFile").change(function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const imgURL = URL.createObjectURL(file);
+                $("#avatarPreview").attr("src", imgURL).show();
+                $("#uploadIcon").hide();
+            }
+        });
+    });
+</script>
+</body>
 </html>

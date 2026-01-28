@@ -41,6 +41,37 @@
         .action-btn:hover {
             transform: translateY(-2px);
         }
+
+        /* Thiết kế phân trang mới */
+        .pagination {
+            gap: 5px; /* Khoảng cách giữa các nút */
+        }
+
+        .page-link {
+            border: none;
+            border-radius: 8px !important; /* Bo góc hiện đại */
+            color: #495057;
+            padding: 10px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .page-item.active .page-link {
+            background-color: #0d6efd; /* Màu xanh Primary */
+            border-color: #0d6efd;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3); /* Hiệu ứng đổ bóng cho nút active */
+        }
+
+        .page-item.disabled .page-link {
+            background-color: #f8f9fa;
+            color: #dee2e6;
+        }
+
+        .page-link:hover:not(.active) {
+            background-color: #e9ecef;
+            color: #0d6efd;
+            transform: translateY(-2px); /* Bay nhẹ khi hover */
+        }
     </style>
 </head>
 <body class="sb-nav-fixed">
@@ -112,6 +143,31 @@
                                 </tbody>
                             </table>
                         </div>
+                        <nav aria-label="Product Page Navigation" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                    <a class="page-link shadow-sm" href="/admin/product?page=${currentPage - 1}"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <c:forEach begin="1" end="${totalPage}" var="pageIndex">
+                                    <li class="page-item ${currentPage == pageIndex ? 'active' : ''}">
+                                        <a class="page-link shadow-sm" href="/admin/product?page=${pageIndex}">
+                                                ${pageIndex}
+                                        </a>
+                                    </li>
+                                </c:forEach>
+
+                                <li class="page-item ${currentPage == totalPage ? 'disabled' : ''}">
+                                    <a class="page-link shadow-sm" href="/admin/product?page=${currentPage + 1}"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

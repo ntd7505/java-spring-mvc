@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import vn.hoidanit.laptopshop.domain.DTO.RegisterDTO;
 import vn.hoidanit.laptopshop.domain.Product;
 import vn.hoidanit.laptopshop.domain.User;
+import vn.hoidanit.laptopshop.repository.ProductRepository;
 import vn.hoidanit.laptopshop.service.ProductService;
 import vn.hoidanit.laptopshop.service.UserService;
 
@@ -24,16 +25,18 @@ public class HomePageController {
     private final ProductService productService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final ProductRepository productRepository;
 
-    public HomePageController(ProductService productService, UserService userService, PasswordEncoder passwordEncoder) {
+    public HomePageController(ProductService productService, UserService userService, PasswordEncoder passwordEncoder, ProductRepository productRepository) {
         this.productService = productService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.productRepository = productRepository;
     }
 
     @GetMapping("/")
     public String getHomePage(Model model) {
-        List<Product> products = this.productService.gellALlProducts();
+        List<Product> products = this.productRepository.findAllProduct();
         model.addAttribute("products", products);
         return "/client/homepage/show";
     }

@@ -6,9 +6,9 @@ import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import vn.hoidanit.laptopshop.domain.Cart;
-import vn.hoidanit.laptopshop.domain.CartDetails;
-import vn.hoidanit.laptopshop.domain.User;
+import vn.hoidanit.laptopshop.domain.*;
+import vn.hoidanit.laptopshop.repository.OrderDetailRepository;
+import vn.hoidanit.laptopshop.repository.OrderRepository;
 import vn.hoidanit.laptopshop.service.CartService;
 import vn.hoidanit.laptopshop.service.ProductService;
 
@@ -21,10 +21,14 @@ public class CartController {
 
     private final CartService cartService;
     private final ProductService productService;
+    private final OrderDetailRepository orderDetailRepository;
+    private final OrderRepository orderRepository;
 
-    public CartController(CartService cartService, ProductService productService) {
+    public CartController(CartService cartService, ProductService productService, OrderDetailRepository orderDetailRepository, OrderRepository orderRepository) {
         this.cartService = cartService;
         this.productService = productService;
+        this.orderDetailRepository = orderDetailRepository;
+        this.orderRepository = orderRepository;
     }
 
     @PostMapping("/cart/delete/{id}")
@@ -74,7 +78,7 @@ public class CartController {
             @RequestParam("receiverPhone") String receiverPhone) {
 
         User currentUser = new User();
-        
+
         HttpSession session = request.getSession(false);
         long id = (long) session.getAttribute("id");
         currentUser.setId(id);
@@ -87,5 +91,18 @@ public class CartController {
     @GetMapping("/thanks")
     public String getThanksPage(Model model) {
         return "/client/cart/thanks";
+    }
+
+    @GetMapping("/cart-history")
+    public String getCartHistoryPage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        session.getAttribute("id");
+        long id = (long) session.getAttribute("id");
+        Order order = this.orderRepository.findOrderByUser_Id(id);
+        List<OrderDetail> orderDetailList = this.orderDetailRepository.findOrderDetailByOrder_Id(order.getId());
+        model.addAttribute("orderDetails", orderDetailList);
+        model.addAttribute("orderId", order.getId());
+        model.addAttribute("order", order);
+        return "/client/cart/cart-history";
     }
 }

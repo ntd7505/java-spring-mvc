@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import vn.hoidanit.laptopshop.domain.Cart;
 import vn.hoidanit.laptopshop.domain.CartDetails;
 import vn.hoidanit.laptopshop.domain.Product;
@@ -37,11 +38,14 @@ public class ItemController {
     }
 
     @PostMapping("/add-product-to-cart/{id}")
-    public String addProductToCart(@PathVariable long id, HttpServletRequest request) {
+    public String addProductToCart(@PathVariable long id, HttpServletRequest request, @RequestParam("quantity") int quantity) {
         HttpSession session = request.getSession(false);
         long productId = id;
+        if (quantity <= 0) {
+            quantity = 1;
+        }
         String email = (String) session.getAttribute("email");
-        this.productService.handleAddProductToCart(email, productId, session);
+        this.productService.handleAddProductToCart(email, quantity, productId, session);
         return "redirect:/";
     }
 

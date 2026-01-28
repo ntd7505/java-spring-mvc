@@ -64,8 +64,8 @@ public class CartService {
             double sum = 0;
             for (CartDetails cartDetail : cartDetails) {
                 sum += cartDetail.getPrice();
+                order.setTotalPrice(sum);
             }
-            order.setTotalPrice(sum);
             order = this.orderRepository.save(order);
 
             if (cartDetails != null) {
@@ -88,7 +88,7 @@ public class CartService {
                 //step3: update session
                 session.setAttribute("sum", 0);
             }
-            
+
         }
     }
 

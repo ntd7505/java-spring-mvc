@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.laptopshop.domain.CartDetails;
@@ -35,8 +37,8 @@ public class ProductService {
         this.productRepository.save(newProduct);
     }
 
-    public List<Product> gellALlProducts() {
-        return this.productRepository.findAll();
+    public Page<Product> gellALlProducts(Pageable pageable) {
+        return this.productRepository.findAll(pageable);
     }
 
     public Product handleFindById(long id) {
@@ -47,7 +49,7 @@ public class ProductService {
         this.productRepository.deleteById(id);
     }
 
-    public void handleAddProductToCart(String email, long productId, HttpSession session) {
+    public void handleAddProductToCart(String email, int quantity, long productId, HttpSession session) {
         User user = this.userService.getUserByEmail(email);
         if (user != null) {
             Cart cart = this.cartRepository.findByUser(user);
@@ -68,15 +70,14 @@ public class ProductService {
                     cartDetails.setCart(cart);
                     cartDetails.setProduct(realProduct);
                     cartDetails.setPrice(realProduct.getPrice());
-                    cartDetails.setQuantity(1);
+                    cartDetails.setQuantity(quantity);
                     this.cartDetailsRepository.save(cartDetails);
-
-                    int s = cart.getSum() + 1;
+                    int s = cart.getSum() + quantity;
                     cart.setSum(s);
                     this.cartRepository.save(cart);
                     session.setAttribute("sum", s);
                 } else {
-                    oldDetails.setQuantity(oldDetails.getQuantity() + 1);
+                    oldDetails.setQuantity(oldDetails.getQuantity() + quantity);
                     this.cartDetailsRepository.save(oldDetails);
                 }
             }
@@ -99,7 +100,7 @@ public class ProductService {
 
     public void handleUpdateCartBeforeCheckout(List<CartDetails> cartDetails) {
         for (CartDetails cartDetail : cartDetails) {
-            
+
             Optional<CartDetails> cdOptional = this.cartDetailsRepository.findById(cartDetail.getId());
             if (cdOptional.isPresent()) {
                 CartDetails currentCartDetail = cdOptional.get();
@@ -109,4 +110,7 @@ public class ProductService {
         }
     }
 
+    public long countProduct() {
+        return this.productRepository.count();
+    }
 }

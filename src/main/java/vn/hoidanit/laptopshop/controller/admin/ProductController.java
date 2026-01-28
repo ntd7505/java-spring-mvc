@@ -2,6 +2,9 @@ package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,9 +35,13 @@ public class ProductController {
 
     // Home
     @GetMapping("/admin/product")
-    public String getDashboard(Model model) {
-        List<Product> products = this.productService.gellALlProducts();
-        model.addAttribute("product", products);
+    public String getDashboard(Model model, @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+        Pageable pageable = PageRequest.of(page - 1, 2);
+        Page<Product> prs = this.productService.gellALlProducts(pageable);
+        List<Product> listProduct = prs.getContent();
+        model.addAttribute("product", prs.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", prs.getTotalPages());
         return "/admin/product/show";
     }
 
@@ -48,7 +55,7 @@ public class ProductController {
     // Save product
     @PostMapping(value = "/admin/product/create")
     public String saveProducts(Model model, @ModelAttribute("newProducts") @Valid Product newProduct,
-            BindingResult newProductsBindingResult, @RequestParam("hoidanitFile") MultipartFile file) {
+                               BindingResult newProductsBindingResult, @RequestParam("hoidanitFile") MultipartFile file) {
         List<FieldError> errors = newProductsBindingResult.getFieldErrors();
         for (FieldError error : errors) {
             System.out.println(">>>> " + error.getField() + " - " + error.getDefaultMessage());
@@ -94,7 +101,7 @@ public class ProductController {
 
     @PostMapping("/admin/product/update")
     public String postUpdateProduct(Model model, @ModelAttribute("newProduct") Product products,
-            @RequestParam("hoidanitFile") MultipartFile file) {
+                                    @RequestParam("hoidanitFile") MultipartFile file) {
         Product currentProduct = this.productService.handleFindById(products.getId());
 
         if (currentProduct != null) {
